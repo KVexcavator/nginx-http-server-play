@@ -1,0 +1,54 @@
+systemd unit file
+
+Большинство операционных систем на базе Linux на сегодняшний день используют служебный файл в стиле systemd.
+
+Преобразование демона NGINX в реальную системную:
+  - демон будет управляться с помощью стандартных команд 
+  - будет автоматически запускаться при запуске системы и останавливаться при ее завершении
+
+из установленных по умолчанию
+sudo cp /lib/systemd/system/nginx.service /etc/systemd/system/nginx.service
+создать или редактироватьскопированный  для кастомных настроек
+sudo nano /etc/systemd/system/nginx.service
+
+```
+#/lib/systemd/system/nginx.service
+[Unit]
+Description=NGINX server
+After=syslog.target network-online.target
+Wants=network-online.target
+[Service]
+Type=forking
+PIDFile=/run/nginx.pid
+ExecStartPre=/usr/local/nginx/sbin/nginx -t
+ExecStart=/usr/local/nginx/sbin/nginx
+ExecReload=/usr/local/nginx/sbin/nginx -s reload
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
+```
+если нет /run/nginx.pid
+sudo touch /run/nginx.pid
+whoami или id инфа о текущем пользователе
+sudo chown excavator:excavator /run/nginx.pid
+посмотреть кто юзер в /usr/local/nginx/conf/nginx.conf
+раскоментировать user nobody и заменить на excavator, 
+добавить pid /run/nginx.pid;
+
+
+перезагрузить
+sudo systemctl daemon-reload
+перезапустить
+sudo systemctl restart nginx
+статус
+sudo systemctl status nginx
+Чтобы включить службу при загрузке:
+systemctl enable nginx
+Проверьте, загрузится ли ваш сервер NGINX, выполнив команду is-enabled:
+$ systemctl is-enabled nginx
+
+* Если нужна простота управления и обновлений: 
+стандартный путь /usr/sbin/nginx с параметрами -g.
+* Если необходима кастомизация или особые модули Nginx:
+ /usr/local/nginx/sbin/nginx и будьте готовы к ручному управлению.

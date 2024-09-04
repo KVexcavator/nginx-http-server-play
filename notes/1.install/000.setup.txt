@@ -1,0 +1,29 @@
+Installing NGINX
+For Debian-based distributions
+add key
+http://nginx.org/keys/nginx_signing.key
+run command:
+Determine Your Ubuntu Codename
+lsb_release -cs  (jammy)
+sudo nano /etc/apt/sources.list
+to end list
+deb http://nginx.org/packages/ubuntu/ jammy nginx
+deb-src http://nginx.org/packages/ubuntu/ jammy nginx
+sudo apt update
+sudo apt install nginx
+==================================
+Installing GNU Compiler Collection
+$ gcc
+if
+~bash: gcc: command not found
+sudo su
+apt-get install build-essentials
+==================================
+The PCRE library
+apt install libpcre3 libpcre3-dev
+==================================
+The zlib library
+apt install zlib1g zlib1g-dev
+==================================
+OpenSSL
+apt install openssl libssl-dev
